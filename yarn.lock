@@ -2527,6 +2527,18 @@
   resolved "https://registry.yarnpkg.com/@rushstack/eslint-patch/-/eslint-patch-1.10.4.tgz#427d5549943a9c6fce808e39ea64dbe60d4047f1"
   integrity sha512-WJgX9nzTqknM393q1QJDJmoW28kUfEnybeTfVNcNAPnIx210RXm2DiXiHzfNPJNIUUb1tJnz/l4QGtJ30PgWmA==
 
+"@statsig/client-core@3.14.0":
+  version "3.14.0"
+  resolved "https://registry.yarnpkg.com/@statsig/client-core/-/client-core-3.14.0.tgz#11cc39dc045990fdb5f5940daf1ed4b6a92a7697"
+  integrity sha512-60YvxtuccsEi8KuXLChmS9d7jlHUUH8NRB235qcHEMV4eqbkBCDXxlvg7hc9v0jh47BT7vrEcTmhdjvPvlvX2g==
+
+"@statsig/js-client@^3.14.0":
+  version "3.14.0"
+  resolved "https://registry.yarnpkg.com/@statsig/js-client/-/js-client-3.14.0.tgz#d4ee086329b3276283d57431148f0987e7f8b728"
+  integrity sha512-FHbwC8Zv8NhVaugQYLFnoBRdyMv6wMOJ3unadKqEs8Tt+M1xrL+OA99dAQO3RG5NloKsRWyoS3xKFH5s3/yi4w==
+  dependencies:
+    "@statsig/client-core" "3.14.0"
+
 "@svgr/babel-plugin-add-jsx-attribute@^6.5.1":
   version "6.5.1"
   resolved "https://registry.yarnpkg.com/@svgr/babel-plugin-add-jsx-attribute/-/babel-plugin-add-jsx-attribute-6.5.1.tgz#74a5d648bd0347bda99d82409d87b8ca80b9a1ba"
