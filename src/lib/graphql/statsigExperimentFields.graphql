@@ -1,0 +1,25 @@
+fragment StatsigExperimentFields on StatsigVariantContainer {
+  __typename
+  sys {
+    id
+    spaceId
+  }
+  entryName
+  experimentId
+  treatmentVariationsCollection {
+    items {
+      sys {
+        id
+      }
+      ...RichImageFields
+      ...PageBlogPostFields
+    }
+  }
+  controlVariation {
+    sys {
+      id
+    }
+    ...RichImageFields
+    ...PageBlogPostFields
+  }
+}

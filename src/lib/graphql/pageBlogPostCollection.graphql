@@ -5,9 +5,15 @@ query pageBlogPostCollection(
   $order: [PageBlogPostOrder]
   $where: PageBlogPostFilter
 ) {
-  pageBlogPostCollection(limit: $limit, locale: $locale, preview: $preview, order: $order where: $where) {
+  pageBlogPostCollection(
+    limit: $limit
+    locale: $locale
+    preview: $preview
+    order: $order
+    where: $where
+  ) {
     items {
-      ...PageBlogPostFields
+      ...PageBlogPostWithExperimentFields
     }
   }
 }

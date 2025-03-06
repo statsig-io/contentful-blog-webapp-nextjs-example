@@ -53,10 +53,17 @@ fragment PageBlogPostFields on PageBlogPost {
   }
 }
 
+fragment PageBlogPostWithExperimentFields on PageBlogPost {
+  ...PageBlogPostFields
+  statsigExperiment {
+    ...StatsigExperimentFields
+  }
+}
+
 query pageBlogPost($slug: String!, $locale: String, $preview: Boolean) {
   pageBlogPostCollection(limit: 1, where: { slug: $slug }, locale: $locale, preview: $preview) {
     items {
-      ...PageBlogPostFields
+      ...PageBlogPostWithExperimentFields
     }
   }
 }
