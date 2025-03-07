@@ -1,5 +1,10 @@
 directive @contentSourceMaps on QUERY
 
+"""
+Indicates exactly one field must be supplied and this field must not be `null`.
+"""
+directive @oneOf on INPUT_OBJECT
+
 """Represents a binary file in a space. An asset can be any file type."""
 type Asset {
   contentType(locale: String): String
@@ -396,10 +401,26 @@ enum ComponentSeoOrder {
 }
 
 type ContentfulMetadata {
+  concepts: [TaxonomyConcept]!
   tags: [ContentfulTag]!
 }
 
+input ContentfulMetadataConceptsDescendantsFilter {
+  id_contains_all: [String]
+  id_contains_none: [String]
+  id_contains_some: [String]
+}
+
+input ContentfulMetadataConceptsFilter {
+  descendants: ContentfulMetadataConceptsDescendantsFilter
+  id_contains_all: [String]
+  id_contains_none: [String]
+  id_contains_some: [String]
+}
+
 input ContentfulMetadataFilter {
+  concepts: ContentfulMetadataConceptsFilter
+  concepts_exists: Boolean
   tags: ContentfulMetadataTagsFilter
   tags_exists: Boolean
 }
@@ -614,6 +635,7 @@ type PageBlogPost implements Entry & _Node {
   seoFields(locale: String, preview: Boolean, where: ComponentSeoFilter): ComponentSeo
   shortDescription(locale: String): String
   slug(locale: String): String
+  statsigExperiment(locale: String, preview: Boolean, where: StatsigVariantContainerFilter): StatsigVariantContainer
   sys: Sys!
   title(locale: String): String
 }
@@ -709,6 +731,8 @@ input PageBlogPostFilter {
   slug_not: String
   slug_not_contains: String
   slug_not_in: [String]
+  statsigExperiment: cfStatsigVariantContainerNestedFilter
+  statsigExperiment_exists: Boolean
   sys: SysFilter
   title: String
   title_contains: String
@@ -877,6 +901,8 @@ type Query {
   pageBlogPostCollection(limit: Int = 100, locale: String, order: [PageBlogPostOrder], preview: Boolean, skip: Int = 0, where: PageBlogPostFilter): PageBlogPostCollection
   pageLanding(id: String!, locale: String, preview: Boolean): PageLanding
   pageLandingCollection(limit: Int = 100, locale: String, order: [PageLandingOrder], preview: Boolean, skip: Int = 0, where: PageLandingFilter): PageLandingCollection
+  statsigVariantContainer(id: String!, locale: String, preview: Boolean): StatsigVariantContainer
+  statsigVariantContainerCollection(limit: Int = 100, locale: String, order: [StatsigVariantContainerOrder], preview: Boolean, skip: Int = 0, where: StatsigVariantContainerFilter): StatsigVariantContainerCollection
 }
 
 interface ResourceLink {
@@ -886,6 +912,96 @@ interface ResourceLink {
 type ResourceSys {
   linkType: String!
   urn: String!
+}
+
+"""
+Statsig variant container [See type definition](https://app.contentful.com/spaces/nvxmqufxogry/content_types/statsigVariantContainer)
+"""
+type StatsigVariantContainer implements Entry & _Node {
+  _id: ID!
+  contentfulMetadata: ContentfulMetadata!
+  controlVariation(locale: String, preview: Boolean): Entry
+  entryName(locale: String): String
+  experimentId(locale: String): String
+  linkedFrom(allowedLocales: [String]): StatsigVariantContainerLinkingCollections
+  sys: Sys!
+  treatmentVariationsCollection(limit: Int = 100, locale: String, preview: Boolean, skip: Int = 0): StatsigVariantContainerTreatmentVariationsCollection
+}
+
+type StatsigVariantContainerCollection {
+  items: [StatsigVariantContainer]!
+  limit: Int!
+  skip: Int!
+  total: Int!
+}
+
+input StatsigVariantContainerFilter {
+  AND: [StatsigVariantContainerFilter]
+  OR: [StatsigVariantContainerFilter]
+  contentfulMetadata: ContentfulMetadataFilter
+  controlVariation_exists: Boolean
+  entryName: String
+  entryName_contains: String
+  entryName_exists: Boolean
+  entryName_in: [String]
+  entryName_not: String
+  entryName_not_contains: String
+  entryName_not_in: [String]
+  experimentId: String
+  experimentId_contains: String
+  experimentId_exists: Boolean
+  experimentId_in: [String]
+  experimentId_not: String
+  experimentId_not_contains: String
+  experimentId_not_in: [String]
+  sys: SysFilter
+  treatmentVariationsCollection_exists: Boolean
+}
+
+type StatsigVariantContainerLinkingCollections {
+  entryCollection(limit: Int = 100, locale: String, preview: Boolean, skip: Int = 0): EntryCollection
+  pageBlogPostCollection(limit: Int = 100, locale: String, order: [StatsigVariantContainerLinkingCollectionsPageBlogPostCollectionOrder], preview: Boolean, skip: Int = 0): PageBlogPostCollection
+}
+
+enum StatsigVariantContainerLinkingCollectionsPageBlogPostCollectionOrder {
+  internalName_ASC
+  internalName_DESC
+  publishedDate_ASC
+  publishedDate_DESC
+  slug_ASC
+  slug_DESC
+  sys_firstPublishedAt_ASC
+  sys_firstPublishedAt_DESC
+  sys_id_ASC
+  sys_id_DESC
+  sys_publishedAt_ASC
+  sys_publishedAt_DESC
+  sys_publishedVersion_ASC
+  sys_publishedVersion_DESC
+  title_ASC
+  title_DESC
+}
+
+enum StatsigVariantContainerOrder {
+  entryName_ASC
+  entryName_DESC
+  experimentId_ASC
+  experimentId_DESC
+  sys_firstPublishedAt_ASC
+  sys_firstPublishedAt_DESC
+  sys_id_ASC
+  sys_id_DESC
+  sys_publishedAt_ASC
+  sys_publishedAt_DESC
+  sys_publishedVersion_ASC
+  sys_publishedVersion_DESC
+}
+
+type StatsigVariantContainerTreatmentVariationsCollection {
+  items: [Entry]!
+  limit: Int!
+  skip: Int!
+  total: Int!
 }
 
 type Sys {
@@ -935,6 +1051,14 @@ input SysFilter {
   publishedVersion_lte: Float
   publishedVersion_not: Float
   publishedVersion_not_in: [Float]
+}
+
+"""
+Represents a taxonomy concept entity for finding and organizing content easily.
+        Find out more here: https://www.contentful.com/developers/docs/references/content-delivery-api/#/reference/content-concepts
+"""
+type TaxonomyConcept {
+  id: String
 }
 
 interface _Node {
@@ -1046,6 +1170,7 @@ input cfPageBlogPostNestedFilter {
   slug_not: String
   slug_not_contains: String
   slug_not_in: [String]
+  statsigExperiment_exists: Boolean
   sys: SysFilter
   title: String
   title_contains: String
@@ -1054,4 +1179,27 @@ input cfPageBlogPostNestedFilter {
   title_not: String
   title_not_contains: String
   title_not_in: [String]
+}
+
+input cfStatsigVariantContainerNestedFilter {
+  AND: [cfStatsigVariantContainerNestedFilter]
+  OR: [cfStatsigVariantContainerNestedFilter]
+  contentfulMetadata: ContentfulMetadataFilter
+  controlVariation_exists: Boolean
+  entryName: String
+  entryName_contains: String
+  entryName_exists: Boolean
+  entryName_in: [String]
+  entryName_not: String
+  entryName_not_contains: String
+  entryName_not_in: [String]
+  experimentId: String
+  experimentId_contains: String
+  experimentId_exists: Boolean
+  experimentId_in: [String]
+  experimentId_not: String
+  experimentId_not_contains: String
+  experimentId_not_in: [String]
+  sys: SysFilter
+  treatmentVariationsCollection_exists: Boolean
 }

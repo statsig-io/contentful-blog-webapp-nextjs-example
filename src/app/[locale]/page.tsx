@@ -1,15 +1,17 @@
-import type { Metadata } from 'next';
-import { draftMode } from 'next/headers';
-import Link from 'next/link';
-import { notFound } from 'next/navigation';
-
 import { ArticleHero, ArticleTileGrid } from '@src/components/features/article';
-import { Container } from '@src/components/shared/container';
-import TranslationsProvider from '@src/components/shared/i18n/TranslationProvider';
-import initTranslations from '@src/i18n';
-import { defaultLocale, locales } from '@src/i18n/config';
-import { PageBlogPostOrder } from '@src/lib/__generated/sdk';
 import { client, previewClient } from '@src/lib/client';
+import { defaultLocale, locales } from '@src/i18n/config';
+
+import { Container } from '@src/components/shared/container';
+import Link from 'next/link';
+import type { Metadata } from 'next';
+import { PageBlogPostOrder } from '@src/lib/__generated/sdk';
+import TranslationsProvider from '@src/components/shared/i18n/TranslationProvider';
+import { draftMode } from 'next/headers';
+import { generateStatsigClient } from '@src/lib/statsigClient';
+import { getExperimentUpdatedBlogPost } from '@src/lib/variantHelper';
+import initTranslations from '@src/i18n';
+import { notFound } from 'next/navigation';
 
 interface LandingPageProps {
   params: {
@@ -65,7 +67,14 @@ export default async function Page({ params: { locale } }: LandingPageProps) {
     },
     preview,
   });
-  const posts = blogPostsData.pageBlogPostCollection?.items;
+
+  // implement the appropriate SDK for your app: a dummy SDK generated below
+  // for example purposes
+  const statsigClient = await generateStatsigClient();
+
+  const posts = blogPostsData.pageBlogPostCollection?.items?.map(post =>
+    getExperimentUpdatedBlogPost(statsigClient, post!),
+  );
 
   if (!page?.featuredBlogPost || !posts) {
     return;
