@@ -18,7 +18,9 @@ Now, add a client SDK key as a `STATSIG_SDK_KEY` in your `.env` file (see [`.env
 
 ### Add Experiment Fields to GraphQL
 
-Now you can setup your experiments to be pulled through GraphQL. Follow [this changeset](https://github.com/statsig-io/contentful-blog-webapp-nextjs-example/pull/5/commits/545697b54af182fe55d93994369a2b205fe3387f) as a guide.
+Now you can setup your experiments to be pulled through GraphQL. Follow [this changeset](https://github.com/statsig-io/contentful-blog-webapp-nextjs-example/pull/5/commits/545697b54af182fe55d93994369a2b205fe3387f) as a guide to add a `StatsigExperimentFields` fragment, and add to your Content Type's graphql files. Then, to generate the types in graphql, run the command:
+
+```yarn graphql-codegen:generate```
 
 ### Add Experiment to Content Types
 
