@@ -10,7 +10,7 @@ jobs:
   polaris:
     name: polaris / code-scan
     continue-on-error: true
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-2vcpu-ubuntu-2404
     if: (github.repository_owner == 'contentful') && (endsWith(github.actor, '[bot]') == false)
     steps:
       - name: Clone repo
